@@ -1,0 +1,89 @@
+//https://i.imgur.com/LynxIYL.jpeg
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define int long long
+
+struct trie
+{
+    trie *a[2];
+    int val;
+    trie()
+    {
+        val = 0;
+        for (int i = 0; i <= 1; ++i)
+            a[i] = NULL;
+    }
+};
+
+trie *root = new trie();
+
+void insert(string s, int valuE)
+{
+    trie *p = root;
+    for (auto it : s)
+    {
+        if (p->a[it - '0'] == NULL) p->a[it - '0'] = new trie();
+        p = p->a[it - '0'];
+    }
+
+    p->val = valuE;
+}
+
+int n, m;
+void process()
+{
+    cin >> n;
+    for (int i = 1; i <= n; ++i)
+    {
+        int x;
+        cin >> x;
+        string s = "";
+        for (int j = 29; j >= 0; j--)
+        {
+            int cur = (x >> j) & 1; /// bit hiện tại của x
+            if (cur == 1) s.push_back('1');
+            else          s.push_back('0');
+        }
+//        cout << s << '\n';
+        insert(s, x);
+    }
+
+    cin >> m;
+    for (int i = 1; i <= m; ++i)
+    {
+        int x;
+        cin >> x;
+        trie *p = root;
+        for (int j = 29; j >= 0; j--)
+        {
+            int cur = (x >> j) & 1;
+            /// 0^1 = 1, 1^1 = 0
+            if (p->a[cur ^ 1] != NULL)
+            {
+                p = p->a[cur ^ 1];
+            }
+            else p = p->a[cur];
+        }
+
+        cout << p->val << ' ';
+    }
+}
+
+signed main()
+{
+    // Nhanh hơn
+    cin.tie(0)->sync_with_stdio(0);
+
+    #define task "phcbaka"
+    if (fopen(task ".inp", "r")) // Kiểm tra xem có đọc vào từ file không
+    {
+        freopen(task ".inp", "r", stdin);
+        freopen(task ".out", "w", stdout);
+    }
+
+    process();
+
+    return 0;
+}
