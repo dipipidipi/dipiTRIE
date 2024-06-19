@@ -1,0 +1,81 @@
+/*xác định từng xâu có xuất hiện trong tập các xâu đã cho trước hay không*/
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define int long long
+
+struct trie
+{
+    trie *a[26];
+    bool isEnd = 0;
+    trie()
+    {
+        for (int i = 0; i <= 25; ++i)
+            a[i] = NULL;
+    }
+};
+
+trie *root;
+
+void insert(string s)
+{
+    trie *p = root;
+    for (auto it : s)
+    {
+        if (p->a[it - 'a'] == NULL) p->a[it - 'a'] = new trie();
+        p = p->a[it - 'a'];
+    }
+
+    p->isEnd = true;
+}
+
+bool appear(string st)
+{
+    trie *p = root;
+    for (auto it : st)
+    {
+        if (p->a[it - 'a'] == NULL) return false;
+        p = p->a[it - 'a'];
+    }
+
+    return p->isEnd;
+}
+
+int n, t;
+string s;
+void process()
+{
+    cin >> n;
+    root = new trie();
+
+    for (int i = 1; i <= n; ++i)
+    {
+        cin >> s;
+        insert(s);
+    }
+    cin >> t;
+    for (int i = 1; i <= t; ++i)
+    {
+        cin >> s;
+        cout << (bool)(appear(s)) << '\n';
+    }
+}
+
+signed main()
+{
+    // Nhanh hơn
+    cin.tie(0)->sync_with_stdio(0);
+
+    #define task "phcbaka"
+    if (fopen(task ".inp", "r")) // Kiểm tra xem có đọc vào từ file không
+    {
+        freopen(task ".inp", "r", stdin);
+        freopen(task ".out", "w", stdout);
+    }
+  
+    process();
+
+    return 0;
+}
