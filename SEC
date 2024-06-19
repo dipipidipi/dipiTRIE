@@ -1,0 +1,119 @@
+//https://oj.vnoi.info/problem/chain2
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define int long long
+
+/// Trie cơ bản + QHD trên Trie
+
+struct trie
+{
+    trie *a[2];
+    int cnt, dp;
+    trie()
+    {
+        cnt = 0;
+        dp = 0;
+        for (int i = 0; i <= 1; ++i)
+            a[i] = NULL;
+    }
+};
+
+trie *root = new trie();
+
+void insert(string s)
+{
+    trie *p = root;
+    for (auto it : s)
+    {
+        if (p->a[it - '0'] == NULL) p->a[it - '0'] = new trie();
+        p = p->a[it - '0'];
+    }
+
+    p->cnt++;
+}
+
+void dfs(trie *p)
+{
+    for (int i = 0; i <= 1; ++i)
+    {
+        if (p->a[i] != NULL)
+        {
+            dfs(p->a[i]);
+            p->dp = p->dp + p->a[i]->dp;
+        }
+    }
+
+    p->dp += p->cnt;
+}
+
+
+int m, n;
+string s;
+void process()
+{
+    cin >> m >> n;
+    for (int i = 1; i <= m; ++i)
+    {
+        int len;
+        cin >> len;
+        string s = "";
+        for (int j = 1; j <= len; ++j)
+        {
+            char x;
+            cin >> x;
+            s.push_back(x);
+        }
+        insert(s);
+    }
+
+    dfs(root);
+
+    for (int i = 1; i <= n; ++i)
+    {
+        int len;
+        cin >> len;
+        int ans = 0;
+        trie *p = root;
+        vector<int> bits;
+        for (int j = 1; j <= len; ++j)
+        {
+            int x;
+            cin >> x;
+            bits.push_back(x);
+        }
+        for (int j = 0; j < len; ++j)
+        {
+            if (p->a[bits[j]] != NULL)
+            {
+                p = p->a[bits[j]];
+                if (j != len-1)
+                {
+                    ans += p->cnt;
+                }
+                else ans += p->dp;
+            }
+            else break;
+        }
+        cout << ans << '\n';
+    }
+}
+
+
+signed main()
+{
+    // Nhanh hơn
+    cin.tie(0)->sync_with_stdio(0);
+
+    #define task "phcbaka"
+    if (fopen(task ".inp", "r")) // Kiểm tra xem có đọc vào từ file không
+    {
+        freopen(task ".inp", "r", stdin);
+        freopen(task ".out", "w", stdout);
+    }
+
+    process();
+
+    return 0;
+}
